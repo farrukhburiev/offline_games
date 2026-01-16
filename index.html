@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Offline Games - Telegram Mini App</title>
+    <title>Minesweeper Pro - Telegram</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-dark: #0a0e27;
+            --accent: #0088cc;
+            --accent-glow: #00d4ff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            touch-action: manipulation; /* Prevents accidental zooming on double tap */
+            touch-action: manipulation;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #0a0e27;
-            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f0f1a 50%, #1a0f27 100%);
+            color: white;
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Prevents bouncing/scrolling */
+            overflow: hidden; /* Prevents unwanted scrolling */
             display: flex;
-            flex-direction: column;
+            justify-content: center;
         }
 
         .container {
@@ -29,165 +38,180 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            padding: 12px;
-            max-width: 500px; /* Centers and limits size on desktop */
-            margin: 0 auto;
+            padding: 16px;
+            max-width: 500px;
         }
 
-        /* Main Menu */
+        /* --- MENU DESIGN --- */
         .menu-view {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100%;
-            gap: 20px;
+            gap: 30px;
+            animation: fadeIn 0.5s ease;
         }
 
         .menu-title {
-            font-size: 32px;
-            background: linear-gradient(135deg, #0088cc, #00d4ff);
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: bold;
+            letter-spacing: -1px;
         }
 
         .menu-button {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             border: none;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #0088cc, #0077b6);
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0088cc 0%, #0077b6 100%);
             color: white;
+            box-shadow: 0 8px 32px rgba(0, 136, 204, 0.3);
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            transition: transform 0.2s;
+            text-transform: uppercase;
         }
 
-        /* Game View */
+        .menu-button:active { transform: scale(0.96); }
+
+        /* --- GAME HEADER --- */
         .game-view {
             display: flex;
             flex-direction: column;
             height: 100%;
-            width: 100%;
-            gap: 10px;
+            gap: 15px;
         }
 
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            height: 70px;
+        }
+
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-label { font-size: 11px; color: #aaa; text-transform: uppercase; font-weight: 600; }
+        .stat-value { font-size: 22px; font-weight: 800; color: var(--accent-glow); }
+
+        .btn-icon {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px 14px;
             border-radius: 12px;
-            height: 60px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-label { font-size: 10px; color: #aaa; text-transform: uppercase; }
-        .stat-value { font-size: 20px; font-weight: bold; color: #00d4ff; }
-
-        .back-button {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #0088cc;
-            background: transparent;
-            color: #0088cc;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 14px;
         }
 
-        /* THE FIX: Rigid Game Board Sizing */
+        /* --- THE BOARD (STABLE FIX) --- */
         .game-board-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            min-height: 0; /* Important for flex child */
+            min-height: 0;
         }
 
         .game-board {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: repeat(10, 1fr);
-            gap: 4px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            /* This ensures the board is always square and fits the screen */
-            width: min(90vw, 400px);
-            height: min(90vw, 400px);
+            gap: 6px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            /* Locked Square Size */
+            width: min(92vw, 420px);
+            height: min(92vw, 420px);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
+        /* --- CELL DESIGN --- */
         .cell {
             width: 100%;
             height: 100%;
             border: none;
-            border-radius: 6px;
-            background: #1a1a2e;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white;
-            font-size: 14px;
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.2s;
         }
 
         .cell.revealed {
-            background: #0f0f1a;
-            box-shadow: none;
-            color: #0088cc;
+            background: rgba(15, 15, 30, 0.8);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
+            color: var(--accent-glow);
+            animation: reveal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .cell.mine { background: #ff3333; }
-        .cell.flagged { background: #ff9900; }
+        .cell.mine { background: linear-gradient(135deg, #ff3333, #990000); font-size: 20px; }
+        .cell.flagged { background: linear-gradient(135deg, #ff9900, #cc6600); animation: pop 0.3s; }
 
+        @keyframes reveal { 0% { transform: scale(0.8) rotateY(90deg); opacity: 0; } 100% { transform: scale(1) rotateY(0deg); opacity: 1; } }
+        @keyframes pop { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
+
+        /* --- STATUS FOOTER --- */
         .game-status {
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 18px;
             visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s;
         }
 
-        .game-status.show { visibility: visible; }
-        .win { color: #00ff88; background: rgba(0, 255, 136, 0.1); }
-        .lose { color: #ff3333; background: rgba(255, 51, 51, 0.1); }
+        .game-status.show { visibility: visible; transform: translateY(0); }
+        .win { background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid #00ff88; }
+        .lose { background: rgba(255, 51, 51, 0.15); color: #ff3333; border: 1px solid #ff3333; }
 
         .hidden-view { display: none !important; }
+
+        /* Number Colors */
+        .n-1 { color: #00d4ff; } .n-2 { color: #00ff88; } .n-3 { color: #ffff00; }
+        .n-4 { color: #ff9900; } .n-5 { color: #ff3333; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Menu View -->
+        <!-- Menu -->
         <div id="menuView" class="menu-view">
-            <h1 class="menu-title">🎮 Game Center</h1>
+            <h1 class="menu-title">🚀 GAME HUB</h1>
             <button class="menu-button" onclick="startMinesweeper()">⛏️ Play Minesweeper</button>
         </div>
 
-        <!-- Game View -->
+        <!-- Game -->
         <div id="gameView" class="game-view hidden-view">
             <div class="game-header">
                 <div class="stat-item">
-                    <span class="stat-label">Flags Left</span>
-                    <span class="stat-value" id="flagCount">15</span>
+                    <span class="stat-label">Mines</span>
+                    <span id="flagCount" class="stat-value">15</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">Best</span>
-                    <span class="stat-value" id="highScore">0</span>
+                    <span class="stat-label">Best Score</span>
+                    <span id="highScore" class="stat-value">0</span>
                 </div>
-                <div style="display:flex; gap:5px;">
-                    <button class="back-button" onclick="restartGame()">🔄</button>
-                    <button class="back-button" onclick="backToMenu()">Back</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-icon" onclick="restartGame()">🔄</button>
+                    <button class="btn-icon" onclick="backToMenu()">EXIT</button>
                 </div>
             </div>
 
@@ -202,142 +226,115 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.setHeaderColor('#0a0e27');
 
         const GRID_SIZE = 10;
         const MINE_COUNT = 15;
-        let gameBoard = [];
-        let revealedCells = new Set();
-        let flaggedCells = new Set();
-        let gameOver = false;
+        let board = [], revealed = new Set(), flagged = new Set(), gameOver = false;
 
-        function loadHighScore() {
-            return localStorage.getItem('ms_high_score') || 0;
+        function startMinesweeper() {
+            document.getElementById('menuView').classList.add('hidden-view');
+            document.getElementById('gameView').classList.remove('hidden-view');
+            init();
+            window.history.replaceState({}, '', '?game=minesweeper');
         }
 
-        function updateStats() {
-            document.getElementById('flagCount').textContent = MINE_COUNT - flaggedCells.size;
-            document.getElementById('highScore').textContent = loadHighScore();
-        }
-
-        function initializeBoard() {
-            gameBoard = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
-            revealedCells.clear();
-            flaggedCells.clear();
-            gameOver = false;
+        function init() {
+            board = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
+            revealed.clear(); flagged.clear(); gameOver = false;
+            document.getElementById('gameStatus').className = 'game-status';
             
-            let mines = 0;
-            while (mines < MINE_COUNT) {
-                let r = Math.floor(Math.random() * GRID_SIZE);
-                let c = Math.floor(Math.random() * GRID_SIZE);
-                if (gameBoard[r][c] !== 'M') {
-                    gameBoard[r][c] = 'M';
-                    mines++;
-                }
+            let placed = 0;
+            while (placed < MINE_COUNT) {
+                let r = Math.floor(Math.random()*GRID_SIZE), c = Math.floor(Math.random()*GRID_SIZE);
+                if (board[r][c] !== 'M') { board[r][c] = 'M'; placed++; }
             }
 
-            for (let r = 0; r < GRID_SIZE; r++) {
-                for (let c = 0; c < GRID_SIZE; c++) {
-                    if (gameBoard[r][c] === 'M') continue;
-                    let count = 0;
-                    for (let i = -1; i <= 1; i++) {
-                        for (let j = -1; j <= 1; j++) {
-                            if (gameBoard[r+i]?.[c+j] === 'M') count++;
-                        }
-                    }
-                    gameBoard[r][c] = count;
+            for(let r=0; r<GRID_SIZE; r++) {
+                for(let c=0; c<GRID_SIZE; c++) {
+                    if (board[r][c] === 'M') continue;
+                    let n = 0;
+                    for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) if(board[r+i]?.[c+j] === 'M') n++;
+                    board[r][c] = n;
                 }
             }
             render();
         }
 
         function render() {
-            const container = document.getElementById('gameBoard');
-            container.innerHTML = '';
-            for (let r = 0; r < GRID_SIZE; r++) {
-                for (let c = 0; c < GRID_SIZE; c++) {
-                    const btn = document.createElement('button');
-                    btn.className = 'cell';
+            const el = document.getElementById('gameBoard');
+            el.innerHTML = '';
+            document.getElementById('flagCount').textContent = MINE_COUNT - flagged.size;
+            document.getElementById('highScore').textContent = localStorage.getItem('ms_best') || 0;
+
+            for(let r=0; r<GRID_SIZE; r++) {
+                for(let c=0; c<GRID_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
                     const id = `${r}-${c}`;
                     
-                    if (revealedCells.has(id)) {
-                        btn.classList.add('revealed');
-                        const val = gameBoard[r][c];
-                        btn.textContent = val === 'M' ? '💣' : (val || '');
-                        if (val === 'M') btn.classList.add('mine');
-                    } else if (flaggedCells.has(id)) {
-                        btn.classList.add('flagged');
-                        btn.textContent = '🚩';
+                    if (revealed.has(id)) {
+                        cell.classList.add('revealed');
+                        let val = board[r][c];
+                        cell.innerHTML = val === 'M' ? '💣' : (val || '');
+                        if (val !== 'M') cell.classList.add('n-' + val);
+                        else cell.classList.add('mine');
+                    } else if (flagged.has(id)) {
+                        cell.classList.add('flagged');
+                        cell.innerHTML = '🚩';
                     }
 
-                    btn.onclick = () => reveal(r, c);
-                    btn.oncontextmenu = (e) => { e.preventDefault(); toggleFlag(r, c); };
+                    cell.onclick = () => handleReveal(r, c);
                     
-                    // Mobile long-press for flagging
+                    // Touch logic for flags (Hold for 500ms)
                     let timer;
-                    btn.ontouchstart = () => { timer = setTimeout(() => toggleFlag(r, c), 500); };
-                    btn.ontouchend = () => clearTimeout(timer);
+                    cell.ontouchstart = () => timer = setTimeout(() => handleFlag(r, c), 400);
+                    cell.ontouchend = () => clearTimeout(timer);
+                    cell.oncontextmenu = (e) => { e.preventDefault(); handleFlag(r, c); };
 
-                    container.appendChild(btn);
+                    el.appendChild(cell);
                 }
             }
-            updateStats();
         }
 
-        function reveal(r, c) {
-            if (gameOver || flaggedCells.has(`${r}-${c}`)) return;
-            const id = `${r}-${c}`;
-            if (revealedCells.has(id)) return;
+        function handleReveal(r, c) {
+            if (gameOver || flagged.has(`${r}-${c}`)) return;
+            if (revealed.has(`${r}-${c}`)) return;
 
-            revealedCells.add(id);
-            if (gameBoard[r][c] === 'M') return endGame(false);
-            if (gameBoard[r][c] === 0) {
-                for (let i = -1; i <= 1; i++) {
-                    for (let j = -1; j <= 1; j++) {
-                        if (r+i >= 0 && r+i < GRID_SIZE && c+j >= 0 && c+j < GRID_SIZE) reveal(r+i, c+j);
-                    }
+            revealed.add(`${r}-${c}`);
+            if (board[r][c] === 'M') return end(false);
+            if (board[r][c] === 0) {
+                for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) {
+                    let nr=r+i, nc=c+j;
+                    if(nr>=0 && nr<GRID_SIZE && nc>=0 && nc<GRID_SIZE) handleReveal(nr, nc);
                 }
             }
-            if (revealedCells.size === (GRID_SIZE * GRID_SIZE) - MINE_COUNT) endGame(true);
+            if (revealed.size === (GRID_SIZE*GRID_SIZE)-MINE_COUNT) end(true);
             render();
         }
 
-        function toggleFlag(r, c) {
-            if (gameOver || revealedCells.has(`${r}-${c}`)) return;
+        function handleFlag(r, c) {
+            if (gameOver || revealed.has(`${r}-${c}`)) return;
             const id = `${r}-${c}`;
-            flaggedCells.has(id) ? flaggedCells.delete(id) : flaggedCells.add(id);
+            flagged.has(id) ? flagged.delete(id) : flagged.add(id);
+            tg.HapticFeedback.impactOccurred('light');
             render();
         }
 
-        function endGame(win) {
+        function end(win) {
             gameOver = true;
-            const status = document.getElementById('gameStatus');
-            status.className = 'game-status show ' + (win ? 'win' : 'lose');
-            status.textContent = win ? "🏆 YOU WON!" : "💥 BOOM! GAME OVER";
+            const s = document.getElementById('gameStatus');
+            s.className = 'game-status show ' + (win ? 'win' : 'lose');
+            s.textContent = win ? "🏆 MISSION SUCCESS!" : "💥 CRITICAL FAILURE!";
+            tg.HapticFeedback.notificationOccurred(win ? 'success' : 'error');
             
             if (win) {
-                const currentBest = loadHighScore();
-                if (revealedCells.size > currentBest) localStorage.setItem('ms_high_score', revealedCells.size);
+                let best = localStorage.getItem('ms_best') || 0;
+                if (revealed.size > best) localStorage.setItem('ms_best', revealed.size);
             }
-
             // Reveal all mines
-            for (let r = 0; r < GRID_SIZE; r++) {
-                for (let c = 0; c < GRID_SIZE; c++) {
-                    if (gameBoard[r][c] === 'M') revealedCells.add(`${r}-${c}`);
-                }
-            }
+            for(let r=0;r<GRID_SIZE;r++) for(let c=0;c<GRID_SIZE;c++) if(board[r][c]==='M') revealed.add(`${r}-${c}`);
             render();
-        }
-
-        function startMinesweeper() {
-            document.getElementById('menuView').classList.add('hidden-view');
-            document.getElementById('gameView').classList.remove('hidden-view');
-            initializeBoard();
-            window.history.replaceState({}, '', '?game=minesweeper');
-        }
-
-        function restartGame() {
-            document.getElementById('gameStatus').classList.remove('show');
-            initializeBoard();
         }
 
         function backToMenu() {
@@ -346,8 +343,10 @@
             window.history.replaceState({}, '', window.location.pathname);
         }
 
+        function restartGame() { init(); }
+
         window.onload = () => {
-            if (new URLSearchParams(window.location.search).get('game') === 'minesweeper') startMinesweeper();
+            if(new URLSearchParams(window.location.search).get('game') === 'minesweeper') startMinesweeper();
         };
     </script>
 </body>
