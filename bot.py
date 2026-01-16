@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 
 # Replace with your actual Telegram Bot Token
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = "8233303166:AAF9gAgsgYlfwoujvkE-FEf9M7m5zsRruVE"
 
 # Replace with your GitHub Pages link (or any hosting URL for the Mini App)
 # This URL should point to where you've deployed the index.html file
-BASE_URL = "https://yourusername.github.io/offline-games/"
+BASE_URL = "https://farrukhburiev.github.io/offline_games/"
 
 # ============================================================================
 # Initialize Bot and Dispatcher

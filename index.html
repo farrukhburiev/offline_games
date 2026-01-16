@@ -16,15 +16,17 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0a0e27 0%, #0f0f1a 50%, #1a0f27 100%);
             color: #ffffff;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh; /* Changed height to min-height */
+            display: flex; /* Added display flex */
+            flex-direction: column; /* Added flex-direction column */
+            overflow: auto; /* Changed overflow: hidden to auto to allow scrolling if needed */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             width: 100%;
-            height: 100%;
+            flex: 1; /* Allow container to grow and fill available space */
             display: flex;
             flex-direction: column;
             padding: 16px;
@@ -445,10 +447,11 @@
                         <span class="stat-value" id="flagCount">15</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Revealed</span>
-                        <span class="stat-value" id="revealedCount">0</span>
+                        <span class="stat-label">High Score</span>
+                        <span class="stat-value" id="highScore">0</span>
                     </div>
                 </div>
+                <button class="back-button" onclick="restartGame()">🔄 Restart</button>
                 <button class="back-button" onclick="backToMenu()">← Back</button>
             </div>
             <div class="game-board-container">
@@ -470,6 +473,7 @@
         // Game Constants
         const GRID_SIZE = 10;
         const MINE_COUNT = 15;
+        const STORAGE_KEY = 'minesweeper_high_score';
 
         // Game State
         let gameBoard = [];
@@ -477,6 +481,25 @@
         let flaggedCells = new Set();
         let gameOver = false;
         let gameWon = false;
+        let highScore = loadHighScore();
+
+        // High Score Management Functions
+        function loadHighScore() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            return saved ? parseInt(saved) : 0;
+        }
+
+        function saveHighScore(score) {
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem(STORAGE_KEY, score);
+                updateHighScoreDisplay();
+            }
+        }
+
+        function updateHighScoreDisplay() {
+            document.getElementById('highScore').textContent = highScore;
+        }
 
         // Initialize game board on page load
         function initializeBoard() {
@@ -565,6 +588,7 @@
         }
 
         function revealCell(row, col) {
+            console.log(`Cell clicked: ${row}-${col}`);
             if (gameOver || gameWon) return;
 
             const cellId = `${row}-${col}`;
@@ -668,10 +692,14 @@
                 statusElement.classList.add('win');
                 statusElement.classList.remove('lose');
                 statusElement.textContent = '🎉 You Won!';
+                // Save high score when won
+                saveHighScore(revealedCells.size);
             } else {
                 statusElement.classList.add('lose');
                 statusElement.classList.remove('win');
                 statusElement.textContent = '💥 Game Over!';
+                // Still track the score even if lost
+                saveHighScore(revealedCells.size);
             }
 
             renderBoard();
@@ -685,9 +713,17 @@
         function startMinesweeper() {
             document.getElementById('menuView').classList.add('hidden-view');
             document.getElementById('gameView').classList.remove('hidden-view');
+            updateHighScoreDisplay();
             initializeBoard();
             // Update URL to reflect game state
             window.history.replaceState({}, '', '?game=minesweeper');
+        }
+
+        function restartGame() {
+            gameOver = false;
+            gameWon = false;
+            document.getElementById('gameStatus').classList.remove('show', 'win', 'lose');
+            initializeBoard();
         }
 
         function backToMenu() {
