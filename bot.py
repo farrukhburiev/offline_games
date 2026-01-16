@@ -18,8 +18,18 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ============================================================================
 
-# Replace with your actual Telegram Bot Token
-BOT_TOKEN = "8233303166:AAF9gAgsgYlfwoujvkE-FEf9M7m5zsRruVE"
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+
+if not BOT_TOKEN:
+    raise ValueError("❌ BOT_TOKEN not found! Set it in Railway.")
+
+# Your game URLs (you can keep these or also make them env variables)
+GAME_URL = "https://farrukhburiev.github.io/offline_games/"
+MINESWEEPER_URL = "https://farrukhburiev.github.io/offline_games/?game=minesweeper"
+
+# Initialize bot
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
 
 # Replace with your GitHub Pages link (or any hosting URL for the Mini App)
 # This URL should point to where you've deployed the index.html file
