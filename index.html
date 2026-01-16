@@ -166,9 +166,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            padding: 8px;
-            min-height: 0; /* Important for flex children */
+            overflow: auto;
+            padding: 12px;
         }
 
         .game-board {
@@ -177,13 +176,11 @@
             gap: 6px;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
-            padding: 12px;
+            padding: 16px;
             border-radius: 18px;
             aspect-ratio: 1;
-            width: 90vw;
-            height: 90vw;
-            max-width: 90vh;
-            max-height: 90vh;
+            max-width: 100%;
+            max-height: 100%;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 8px 32px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
         }
@@ -476,7 +473,6 @@
         // Game Constants
         const GRID_SIZE = 10;
         const MINE_COUNT = 15;
-        const STORAGE_KEY = 'minesweeper_high_score';
 
         // Game State
         let gameBoard = [];
@@ -484,25 +480,6 @@
         let flaggedCells = new Set();
         let gameOver = false;
         let gameWon = false;
-        let highScore = loadHighScore();
-
-        // High Score Management Functions
-        function loadHighScore() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            return saved ? parseInt(saved) : 0;
-        }
-
-        function saveHighScore(score) {
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem(STORAGE_KEY, score);
-                updateHighScoreDisplay();
-            }
-        }
-
-        function updateHighScoreDisplay() {
-            document.getElementById('highScore').textContent = highScore;
-        }
 
         // Initialize game board on page load
         function initializeBoard() {
@@ -695,14 +672,10 @@
                 statusElement.classList.add('win');
                 statusElement.classList.remove('lose');
                 statusElement.textContent = '🎉 You Won!';
-                // Save high score when won
-                saveHighScore(revealedCells.size);
             } else {
                 statusElement.classList.add('lose');
                 statusElement.classList.remove('win');
                 statusElement.textContent = '💥 Game Over!';
-                // Still track the score even if lost
-                saveHighScore(revealedCells.size);
             }
 
             renderBoard();
@@ -716,17 +689,9 @@
         function startMinesweeper() {
             document.getElementById('menuView').classList.add('hidden-view');
             document.getElementById('gameView').classList.remove('hidden-view');
-            updateHighScoreDisplay();
             initializeBoard();
             // Update URL to reflect game state
             window.history.replaceState({}, '', '?game=minesweeper');
-        }
-
-        function restartGame() {
-            gameOver = false;
-            gameWon = false;
-            document.getElementById('gameStatus').classList.remove('show', 'win', 'lose');
-            initializeBoard();
         }
 
         function backToMenu() {
