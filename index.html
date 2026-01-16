@@ -16,17 +16,17 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0a0e27 0%, #0f0f1a 50%, #1a0f27 100%);
             color: #ffffff;
-            min-height: 100vh; /* Changed height to min-height */
-            display: flex; /* Added display flex */
-            flex-direction: column; /* Added flex-direction column */
-            overflow: auto; /* Changed overflow: hidden to auto to allow scrolling if needed */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             width: 100%;
-            flex: 1; /* Allow container to grow and fill available space */
+            flex: 1;
             display: flex;
             flex-direction: column;
             padding: 16px;
@@ -43,7 +43,7 @@
         }
 
         .menu-title {
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 700;
             text-align: center;
             margin-bottom: 20px;
@@ -52,6 +52,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: 0.5px;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .menu-items {
@@ -63,30 +69,139 @@
         }
 
         .menu-button {
-            padding: 16px 24px;
-            font-size: 16px;
+            padding: 18px 28px;
+            font-size: 18px;
             font-weight: 600;
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             background: linear-gradient(135deg, #0088cc 0%, #0077b6 100%);
             color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 8px 32px rgba(0, 136, 204, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 136, 204, 0.35);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
         }
 
         .menu-button:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(0, 136, 204, 0.4);
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(0, 136, 204, 0.5);
             background: linear-gradient(135deg, #00a3e0 0%, #0088cc 100%);
         }
 
         .menu-button:active {
             transform: translateY(-2px) scale(0.98);
+        }
+
+        /* Level Selection View */
+        .level-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 16px;
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .level-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0088cc, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .level-grid {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .level-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .level-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(0, 136, 204, 0.4);
+            border-color: rgba(0, 136, 204, 0.5);
+        }
+
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+        }
+
+        .level-card.locked:hover {
+            transform: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .level-number {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0088cc, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .level-info {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .level-best-time {
+            font-size: 14px;
+            color: #00ff88;
+            font-weight: 600;
         }
 
         /* Minesweeper Game */
@@ -101,17 +216,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 18px;
+            padding: 16px 20px;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .game-stats {
             display: flex;
-            gap: 24px;
+            gap: 20px;
             font-weight: 600;
         }
 
@@ -130,7 +245,7 @@
         }
 
         .stat-value {
-            font-size: 22px;
+            font-size: 24px;
             background: linear-gradient(135deg, #0088cc, #00d4ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -138,12 +253,17 @@
             font-weight: 700;
         }
 
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
         .back-button {
-            padding: 10px 16px;
+            padding: 12px 18px;
             font-size: 11px;
             font-weight: 700;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             background: rgba(0, 136, 204, 0.2);
             color: #0088cc;
@@ -157,8 +277,8 @@
         .back-button:hover {
             background: rgba(0, 136, 204, 0.35);
             border-color: rgba(0, 136, 204, 0.8);
-            transform: translateX(-2px);
-            box-shadow: 0 4px 16px rgba(0, 136, 204, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 136, 204, 0.3);
         }
 
         .game-board-container {
@@ -172,15 +292,13 @@
 
         .game-board {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 6px;
+            gap: 5px;
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            padding: 16px;
-            border-radius: 18px;
-            aspect-ratio: 1;
-            max-width: 100%;
-            max-height: 100%;
+            backdrop-filter: blur(16px);
+            padding: 18px;
+            border-radius: 20px;
+            width: 100%;
+            height: 100%;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 8px 32px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
         }
@@ -188,18 +306,18 @@
         .cell {
             aspect-ratio: 1;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #ffffff;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4),
                         inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transform: translateZ(0);
@@ -209,65 +327,65 @@
 
         .cell:hover:not(.revealed):not(.flagged) {
             background: linear-gradient(135deg, #2a2a4e 0%, #1f3a6d 100%);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 28px rgba(0, 136, 204, 0.25),
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 12px 28px rgba(0, 136, 204, 0.3),
                         inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            border-color: rgba(0, 136, 204, 0.4);
+            border-color: rgba(0, 136, 204, 0.5);
         }
 
         .cell:active:not(.revealed):not(.flagged) {
-            transform: translateY(-1px) scale(0.98);
+            transform: translateY(-1px) scale(0.95);
         }
 
         .cell.revealed {
             background: linear-gradient(135deg, rgba(15, 15, 15, 0.8) 0%, rgba(20, 20, 30, 0.8) 100%);
             cursor: default;
             color: #0088cc;
-            transform: scale(0.98);
+            transform: scale(0.95);
             box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5),
                         0 2px 8px rgba(0, 0, 0, 0.3);
             border-color: rgba(0, 136, 204, 0.2);
-            animation: revealPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: revealPulse 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes revealPulse {
             0% {
-                transform: scale(1) rotateX(0deg);
-                opacity: 0.5;
+                transform: scale(1) rotateY(0deg);
+                opacity: 0.3;
             }
             50% {
-                transform: scale(1.05) rotateX(5deg);
+                transform: scale(1.1) rotateY(10deg);
             }
             100% {
-                transform: scale(0.98);
+                transform: scale(0.95);
                 opacity: 1;
             }
         }
 
         .cell.revealed.empty {
             color: #0f0f0f;
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .cell.revealed.mine {
             background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
             color: #ffffff;
             box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5),
-                        0 8px 20px rgba(255, 51, 51, 0.3);
-            animation: minePulse 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-size: 20px;
+                        0 8px 24px rgba(255, 51, 51, 0.4);
+            animation: minePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 18px;
         }
 
         @keyframes minePulse {
             0% {
-                transform: scale(0.8);
+                transform: scale(0.6) rotate(0deg);
                 opacity: 0;
             }
             50% {
-                transform: scale(1.1);
+                transform: scale(1.15) rotate(10deg);
             }
             100% {
-                transform: scale(1);
+                transform: scale(1) rotate(0deg);
                 opacity: 1;
             }
         }
@@ -275,54 +393,54 @@
         .cell.flagged {
             background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
             color: #ffffff;
-            font-size: 18px;
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3),
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35),
                         inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            animation: flagFlip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: flagFlip 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes flagFlip {
             0% {
-                transform: rotateY(0deg) scale(0.8);
+                transform: rotateY(0deg) scale(0.7);
             }
             50% {
-                transform: rotateY(90deg) scale(1.1);
+                transform: rotateY(180deg) scale(1.15);
             }
             100% {
-                transform: rotateY(0deg) scale(1);
+                transform: rotateY(360deg) scale(1);
             }
         }
 
-        .cell.number-1 { color: #00d4ff; }
-        .cell.number-2 { color: #00ff88; }
-        .cell.number-3 { color: #ffff00; }
-        .cell.number-4 { color: #ff9900; }
-        .cell.number-5 { color: #ff6b6b; }
-        .cell.number-6 { color: #ff3333; }
-        .cell.number-7 { color: #ff00ff; }
-        .cell.number-8 { color: #cccccc; }
+        .cell.number-1 { color: #00d4ff; text-shadow: 0 0 8px rgba(0, 212, 255, 0.5); }
+        .cell.number-2 { color: #00ff88; text-shadow: 0 0 8px rgba(0, 255, 136, 0.5); }
+        .cell.number-3 { color: #ffff00; text-shadow: 0 0 8px rgba(255, 255, 0, 0.5); }
+        .cell.number-4 { color: #ff9900; text-shadow: 0 0 8px rgba(255, 153, 0, 0.5); }
+        .cell.number-5 { color: #ff6b6b; text-shadow: 0 0 8px rgba(255, 107, 107, 0.5); }
+        .cell.number-6 { color: #ff3333; text-shadow: 0 0 8px rgba(255, 51, 51, 0.5); }
+        .cell.number-7 { color: #ff00ff; text-shadow: 0 0 8px rgba(255, 0, 255, 0.5); }
+        .cell.number-8 { color: #cccccc; text-shadow: 0 0 8px rgba(204, 204, 204, 0.5); }
 
         .game-status {
-            padding: 18px 24px;
+            padding: 20px 28px;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
             text-align: center;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 22px;
             display: none;
             border: 2px solid transparent;
-            animation: statusSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: statusSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes statusSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px) scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -333,16 +451,22 @@
         .game-status.win {
             color: #00ff88;
             border-color: #00ff88;
-            background: rgba(0, 255, 136, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.25),
+            background: rgba(0, 255, 136, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3),
                         inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: winPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes winPulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 8px 48px rgba(0, 255, 136, 0.5); }
         }
 
         .game-status.lose {
             color: #ff3333;
             border-color: #ff3333;
-            background: rgba(255, 51, 51, 0.1);
-            box-shadow: 0 8px 32px rgba(255, 51, 51, 0.25),
+            background: rgba(255, 51, 51, 0.15);
+            box-shadow: 0 8px 32px rgba(255, 51, 51, 0.3),
                         inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
@@ -356,21 +480,25 @@
             }
 
             .menu-title {
-                font-size: 28px;
+                font-size: 36px;
+            }
+
+            .level-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
 
             .game-board {
-                gap: 5px;
+                gap: 4px;
                 padding: 14px;
             }
 
             .cell {
-                font-size: 14px;
-                border-radius: 10px;
+                font-size: 12px;
+                border-radius: 8px;
             }
 
             .game-stats {
-                gap: 18px;
+                gap: 16px;
             }
         }
 
@@ -380,7 +508,7 @@
             }
 
             .menu-title {
-                font-size: 24px;
+                font-size: 28px;
             }
 
             .game-board-container {
@@ -388,22 +516,22 @@
             }
 
             .game-board {
-                gap: 4px;
+                gap: 3px;
                 padding: 12px;
             }
 
             .cell {
-                font-size: 12px;
-                border-radius: 8px;
+                font-size: 10px;
+                border-radius: 6px;
             }
 
             .stat-value {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             .game-status {
-                font-size: 16px;
-                padding: 14px 18px;
+                font-size: 18px;
+                padding: 16px 20px;
             }
         }
 
@@ -413,12 +541,12 @@
             }
 
             .game-board {
-                gap: 3px;
+                gap: 2px;
                 padding: 10px;
             }
 
             .cell {
-                font-size: 10px;
+                font-size: 9px;
             }
 
             .game-stats {
@@ -433,9 +561,18 @@
         <div id="menuView" class="menu-view">
             <h1 class="menu-title">🎮 Offline Games</h1>
             <div class="menu-items">
-                <button class="menu-button" onclick="startMinesweeper()">⛏️ Minesweeper</button>
+                <button class="menu-button" onclick="showLevelSelection()">⛏️ Minesweeper</button>
                 <button class="menu-button" onclick="alert('More games coming soon!')">🎲 More Games</button>
             </div>
+        </div>
+
+        <!-- Level Selection View -->
+        <div id="levelView" class="level-view hidden-view">
+            <div class="level-header">
+                <div class="level-title">📊 Select Level</div>
+                <button class="back-button" onclick="backToMainMenu()">← Back</button>
+            </div>
+            <div class="level-grid" id="levelGrid"></div>
         </div>
 
         <!-- Minesweeper Game View -->
@@ -443,16 +580,26 @@
             <div class="game-header">
                 <div class="game-stats">
                     <div class="stat-item">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="currentLevel">1</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="timer">0s</span>
+                    </div>
+                    <div class="stat-item">
                         <span class="stat-label">Flags</span>
                         <span class="stat-value" id="flagCount">15</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">High Score</span>
-                        <span class="stat-value" id="highScore">0</span>
+                        <span class="stat-label">Cells</span>
+                        <span class="stat-value" id="cellsLeft">85</span>
                     </div>
                 </div>
-                <button class="back-button" onclick="restartGame()">🔄 Restart</button>
-                <button class="back-button" onclick="backToMenu()">← Back</button>
+                <div class="button-group">
+                    <button class="back-button" onclick="restartGame()">🔄 Restart</button>
+                    <button class="back-button" onclick="backToLevelSelection()">← Levels</button>
+                </div>
             </div>
             <div class="game-board-container">
                 <div class="game-board" id="gameBoard"></div>
@@ -470,30 +617,148 @@
             tg.setBackgroundColor('#0f0f0f');
         }
 
-        // Game Constants
-        const GRID_SIZE = 10;
-        const MINE_COUNT = 15;
-
         // Game State
+        let currentLevel = 1;
+        let maxUnlockedLevel = 1;
         let gameBoard = [];
         let revealedCells = new Set();
         let flaggedCells = new Set();
         let gameOver = false;
         let gameWon = false;
+        let timer = 0;
+        let timerInterval = null;
+        let gridSize = 10;
+        let mineCount = 15;
 
-        // Initialize game board on page load
+        // Load saved data
+        function loadGameData() {
+            const saved = localStorage.getItem('minesweeperData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                maxUnlockedLevel = data.maxUnlockedLevel || 1;
+                return data.levelTimes || {};
+            }
+            return {};
+        }
+
+        // Save game data
+        let levelTimes = loadGameData();
+
+        function saveGameData() {
+            localStorage.setItem('minesweeperData', JSON.stringify({
+                maxUnlockedLevel,
+                levelTimes
+            }));
+        }
+
+        // Calculate level parameters
+        function getLevelParams(level) {
+            let size, mines;
+            
+            if (level < 20) {
+                // Levels 1-19: 10x10 board
+                size = 10;
+                mines = Math.min(15 + Math.floor((level - 1) * 1.5), 35);
+            } else {
+                // Level 20+: Random size between 10x10 and 14x14
+                const sizeOptions = [10, 11, 12, 13, 14];
+                size = sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
+                const cellCount = size * size;
+                const baseMineDensity = 0.15;
+                const levelBonus = Math.floor((level - 20) * 0.5);
+                mines = Math.min(Math.floor(cellCount * baseMineDensity) + levelBonus, Math.floor(cellCount * 0.35));
+            }
+            
+            return { size, mines };
+        }
+
+        // Show level selection
+        function showLevelSelection() {
+            document.getElementById('menuView').classList.add('hidden-view');
+            document.getElementById('levelView').classList.remove('hidden-view');
+            renderLevelGrid();
+        }
+
+        function renderLevelGrid() {
+            const grid = document.getElementById('levelGrid');
+            grid.innerHTML = '';
+            
+            // Show next 30 levels or at least up to level 30
+            const levelsToShow = Math.max(30, maxUnlockedLevel + 10);
+            
+            for (let i = 1; i <= levelsToShow; i++) {
+                const card = document.createElement('div');
+                const isLocked = i > maxUnlockedLevel;
+                card.className = `level-card ${isLocked ? 'locked' : ''}`;
+                
+                const params = getLevelParams(i);
+                const bestTime = levelTimes[i];
+                
+                card.innerHTML = `
+                    <div class="level-number">${i}</div>
+                    <div class="level-info">${params.size}×${params.size} • ${params.mines} 💣</div>
+                    ${bestTime ? `<div class="level-best-time">⏱️ ${bestTime}s</div>` : ''}
+                `;
+                
+                if (!isLocked) {
+                    card.onclick = () => startLevel(i);
+                }
+                
+                grid.appendChild(card);
+            }
+        }
+
+        // Start specific level
+        function startLevel(level) {
+            currentLevel = level;
+            const params = getLevelParams(level);
+            gridSize = params.size;
+            mineCount = params.mines;
+            
+            document.getElementById('levelView').classList.add('hidden-view');
+            document.getElementById('gameView').classList.remove('hidden-view');
+            document.getElementById('currentLevel').textContent = level;
+            
+            initializeBoard();
+            startTimer();
+        }
+
+        function startTimer() {
+            timer = 0;
+            updateTimer();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer++;
+                updateTimer();
+            }, 1000);
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = timer + 's';
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
         function initializeBoard() {
-            gameBoard = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(0));
+            gameBoard = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
             revealedCells.clear();
             flaggedCells.clear();
             gameOver = false;
             gameWon = false;
 
+            const statusElement = document.getElementById('gameStatus');
+            statusElement.classList.remove('show', 'win', 'lose');
+
             // Place mines randomly
             let minesPlaced = 0;
-            while (minesPlaced < MINE_COUNT) {
-                const row = Math.floor(Math.random() * GRID_SIZE);
-                const col = Math.floor(Math.random() * GRID_SIZE);
+            while (minesPlaced < mineCount) {
+                const row = Math.floor(Math.random() * gridSize);
+                const col = Math.floor(Math.random() * gridSize);
                 if (gameBoard[row][col] !== 'M') {
                     gameBoard[row][col] = 'M';
                     minesPlaced++;
@@ -501,15 +766,15 @@
             }
 
             // Calculate numbers
-            for (let row = 0; row < GRID_SIZE; row++) {
-                for (let col = 0; col < GRID_SIZE; col++) {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
                     if (gameBoard[row][col] !== 'M') {
                         let count = 0;
                         for (let dr = -1; dr <= 1; dr++) {
                             for (let dc = -1; dc <= 1; dc++) {
                                 const nr = row + dr;
                                 const nc = col + dc;
-                                if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE && gameBoard[nr][nc] === 'M') {
+                                if (nr >= 0 && nr < gridSize && nc >= 0 && nc < gridSize && gameBoard[nr][nc] === 'M') {
                                     count++;
                                 }
                             }
@@ -525,9 +790,10 @@
         function renderBoard() {
             const boardElement = document.getElementById('gameBoard');
             boardElement.innerHTML = '';
+            boardElement.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
 
-            for (let row = 0; row < GRID_SIZE; row++) {
-                for (let col = 0; col < GRID_SIZE; col++) {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
                     const cellId = `${row}-${col}`;
                     const cell = document.createElement('button');
                     cell.className = 'cell';
@@ -560,6 +826,17 @@
                         toggleFlag(row, col);
                     });
 
+                    let pressTimer;
+                    cell.addEventListener('touchstart', (e) => {
+                        pressTimer = setTimeout(() => {
+                            e.preventDefault();
+                            toggleFlag(row, col);
+                        }, 500);
+                    });
+                    cell.addEventListener('touchend', () => {
+                        clearTimeout(pressTimer);
+                    });
+
                     boardElement.appendChild(cell);
                 }
             }
@@ -568,7 +845,6 @@
         }
 
         function revealCell(row, col) {
-            console.log(`Cell clicked: ${row}-${col}`);
             if (gameOver || gameWon) return;
 
             const cellId = `${row}-${col}`;
@@ -578,13 +854,11 @@
             const value = gameBoard[row][col];
 
             if (value === 'M') {
-                // Hit a mine - game over
                 revealAllMines();
                 endGame(false);
                 return;
             }
 
-            // If empty cell, use flood fill to reveal adjacent cells
             if (value === 0) {
                 floodFill(row, col);
             }
@@ -601,18 +875,19 @@
                 const [r, c] = queue.shift();
                 const cellId = `${r}-${c}`;
 
-                if (visited.has(cellId) || r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) continue;
-                if (revealedCells.has(cellId) && gameBoard[r][c] !== 0) continue;
+                if (visited.has(cellId) || r < 0 || r >= gridSize || c < 0 || c >= gridSize) continue;
+                if (flaggedCells.has(cellId)) continue;
 
                 visited.add(cellId);
 
-                if (!revealedCells.has(cellId) && !flaggedCells.has(cellId)) {
+                if (!revealedCells.has(cellId)) {
                     revealedCells.add(cellId);
                 }
 
                 if (gameBoard[r][c] === 0) {
                     for (let dr = -1; dr <= 1; dr++) {
                         for (let dc = -1; dc <= 1; dc++) {
+                            if (dr === 0 && dc === 0) continue;
                             const nr = r + dr;
                             const nc = c + dc;
                             const neighborId = `${nr}-${nc}`;
@@ -620,11 +895,6 @@
                                 queue.push([nr, nc]);
                             }
                         }
-                    }
-                } else if (gameBoard[r][c] > 0) {
-                    // Reveal number cells adjacent to empty cells
-                    if (!revealedCells.has(cellId)) {
-                        revealedCells.add(cellId);
                     }
                 }
             }
@@ -638,7 +908,7 @@
 
             if (flaggedCells.has(cellId)) {
                 flaggedCells.delete(cellId);
-            } else if (flaggedCells.size < MINE_COUNT) {
+            } else if (flaggedCells.size < mineCount) {
                 flaggedCells.add(cellId);
             }
 
@@ -646,8 +916,8 @@
         }
 
         function revealAllMines() {
-            for (let row = 0; row < GRID_SIZE; row++) {
-                for (let col = 0; col < GRID_SIZE; col++) {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
                     if (gameBoard[row][col] === 'M') {
                         revealedCells.add(`${row}-${col}`);
                     }
@@ -656,56 +926,107 @@
         }
 
         function checkWinCondition() {
-            let nonMineCount = GRID_SIZE * GRID_SIZE - MINE_COUNT;
-            if (revealedCells.size >= nonMineCount) {
+            const totalCells = gridSize * gridSize;
+            const nonMineCells = totalCells - mineCount;
+            
+            let revealedNonMines = 0;
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const cellId = `${row}-${col}`;
+                    if (revealedCells.has(cellId) && gameBoard[row][col] !== 'M') {
+                        revealedNonMines++;
+                    }
+                }
+            }
+
+            if (revealedNonMines === nonMineCells) {
                 endGame(true);
             }
         }
 
         function endGame(won) {
-            gameOver = true;
+            gameOver = !won;
             gameWon = won;
+            stopTimer();
+            
             const statusElement = document.getElementById('gameStatus');
             statusElement.classList.add('show');
 
             if (won) {
                 statusElement.classList.add('win');
                 statusElement.classList.remove('lose');
-                statusElement.textContent = '🎉 You Won!';
+                statusElement.textContent = `🎉 Level ${currentLevel} Complete! Time: ${timer}s`;
+                
+                // Save best time
+                if (!levelTimes[currentLevel] || timer < levelTimes[currentLevel]) {
+                    levelTimes[currentLevel] = timer;
+                }
+                
+                // Unlock next level
+                if (currentLevel >= maxUnlockedLevel) {
+                    maxUnlockedLevel = currentLevel + 1;
+                }
+                
+                saveGameData();
+                
+                // Auto advance to next level after 2 seconds
+                setTimeout(() => {
+                    startLevel(currentLevel + 1);
+                }, 2000);
             } else {
                 statusElement.classList.add('lose');
                 statusElement.classList.remove('win');
-                statusElement.textContent = '💥 Game Over!';
+                statusElement.textContent = '💥 Game Over! Try Again!';
             }
 
             renderBoard();
         }
 
         function updateStats() {
-            document.getElementById('flagCount').textContent = MINE_COUNT - flaggedCells.size;
-            document.getElementById('revealedCount').textContent = revealedCells.size;
+            const totalCells = gridSize * gridSize;
+            const nonMineCells = totalCells - mineCount;
+            let revealedNonMines = 0;
+            
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const cellId = `${row}-${col}`;
+                    if (revealedCells.has(cellId) && gameBoard[row][col] !== 'M') {
+                        revealedNonMines++;
+                    }
+                }
+            }
+            
+            document.getElementById('flagCount').textContent = mineCount - flaggedCells.size;
+            document.getElementById('cellsLeft').textContent = nonMineCells - revealedNonMines;
         }
 
-        function startMinesweeper() {
-            document.getElementById('menuView').classList.add('hidden-view');
-            document.getElementById('gameView').classList.remove('hidden-view');
+        function restartGame() {
             initializeBoard();
-            // Update URL to reflect game state
-            window.history.replaceState({}, '', '?game=minesweeper');
+            startTimer();
         }
 
-        function backToMenu() {
+        function backToLevelSelection() {
+            stopTimer();
             document.getElementById('gameView').classList.add('hidden-view');
-            document.getElementById('menuView').classList.remove('hidden-view');
-            // Clear URL parameters
-            window.history.replaceState({}, '', window.location.pathname);
+            document.getElementById('levelView').classList.remove('hidden-view');
+            renderLevelGrid();
         }
 
-        // Check URL on page load to determine initial view
+        function backToMainMenu() {
+            document.getElementById('levelView').classList.add('hidden-view');
+            document.getElementById('menuView').classList.remove('hidden-view');
+        }
+
         window.addEventListener('load', () => {
             const params = new URLSearchParams(window.location.search);
-            if (params.get('game') === 'minesweeper') {
-                startMinesweeper();
+            const level = params.get('level');
+            if (level) {
+                const lvl = parseInt(level);
+                if (lvl <= maxUnlockedLevel) {
+                    startLevel(lvl);
+                } else {
+                    showLevelSelection();
+                }
             }
         });
     </script>
