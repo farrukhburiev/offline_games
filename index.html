@@ -584,10 +584,24 @@
     <div class="container">
         <!-- Main Menu View -->
         <div id="menuView" class="menu-view">
-            <h1 class="menu-title">🎮 Offline Games</h1>
+            <h1 class="menu-title">Offline Games</h1>
             <div class="menu-items">
-                <button class="menu-button" onclick="showLevelSelection()">⛏️ Minesweeper</button>
-                <button class="menu-button" onclick="alert('More games coming soon!')">🎲 More Games</button>
+                <button class="menu-button" onclick="showLevelSelection()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                    Minesweeper
+                </button>
+                <button class="menu-button" onclick="alert('More games coming soon!')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <path d="M21 15l-5-5L5 21"/>
+                    </svg>
+                    More Games
+                </button>
             </div>
         </div>
 
