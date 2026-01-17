@@ -38,7 +38,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100%;
+            min-height: 100vh;
             height: 100%;
             gap: 24px;
             padding: 20px 0;
@@ -237,13 +237,14 @@
             flex-direction: column;
             height: 100%;
             gap: 16px;
+            justify-content: center;
         }
 
         .game-header {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             padding: 16px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -251,7 +252,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             gap: 16px;
-            flex-wrap: wrap;
         }
 
         .game-stats {
@@ -260,7 +260,6 @@
             font-weight: 600;
             justify-content: center;
             align-items: center;
-            flex: 1;
         }
 
         .stat-item {
@@ -325,8 +324,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: auto;
+            overflow: visible;
             padding: 12px;
+            min-height: 0;
         }
 
         .game-board {
@@ -336,10 +336,10 @@
             backdrop-filter: blur(16px);
             padding: 18px;
             border-radius: 20px;
-            width: 100%;
-            height: 100%;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 8px 32px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: min(600px, 90vw);
+            height: min(600px, 90vw);
         }
 
         .cell {
@@ -432,7 +432,7 @@
         .cell.flagged {
             background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
             color: #ffffff;
-            font-size: 25px;
+            font-size: 23px;
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35),
                         inset 0 1px 0 rgba(255, 255, 255, 0.2);
             animation: flagFlip 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -882,15 +882,24 @@
                         toggleFlag(row, col);
                     });
 
-                    let pressTimer;
-                    cell.addEventListener('touchstart', (e) => {
-                        pressTimer = setTimeout(() => {
+                    // Double-tap for flag on mobile
+                    let tapCount = 0;
+                    let tapTimer;
+                    cell.addEventListener('touchend', (e) => {
+                        tapCount++;
+                        if (tapCount === 1) {
+                            tapTimer = setTimeout(() => {
+                                // Single tap - reveal cell
+                                revealCell(row, col);
+                                tapCount = 0;
+                            }, 300);
+                        } else if (tapCount === 2) {
+                            // Double tap - toggle flag
+                            clearTimeout(tapTimer);
                             e.preventDefault();
                             toggleFlag(row, col);
-                        }, 500);
-                    });
-                    cell.addEventListener('touchend', () => {
-                        clearTimeout(pressTimer);
+                            tapCount = 0;
+                        }
                     });
 
                     boardElement.appendChild(cell);
