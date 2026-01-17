@@ -19,7 +19,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: auto;
+            overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -239,6 +239,12 @@
             gap: 16px;
             justify-content: center;
         }
+
+        .game-view.lose-state .cell {
+    animation: none !important;
+    transition: none !important;
+}
+
 
         .game-header {
             display: flex;
@@ -522,10 +528,11 @@
         }
 
         @keyframes loseShake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate3d(-6px, 0, 0); }
+            20%, 40%, 60%, 80% { transform: translate3d(6px, 0, 0); }
         }
+
 
         .hidden-view {
             display: none !important;
@@ -704,13 +711,18 @@
             }
 
             .game-board-container {
-                padding: 8px;
-            }
+    flex: 1;
+    min-height: 0;
+    max-height: 100%;
+    overflow: hidden;
+}
+
 
             .game-board {
-                gap: 3px;
-                padding: 12px;
-            }
+    width: min(600px, 90vmin);
+    height: min(600px, 90vmin);
+}
+
 
             .cell {
                 font-size: 17px;
@@ -722,9 +734,24 @@
             }
 
             .game-status {
-                font-size: 18px;
-                padding: 16px 20px;
+                position: fixed;
+                left: 50%;
+                bottom: 24px;
+                transform: translateX(-50%);
+                max-width: calc(100vw - 32px);
+                z-index: 5000;
+
+                padding: 20px 28px;
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(20px);
+                border-radius: 18px;
+                text-align: center;
+                font-weight: 700;
+                font-size: 22px;
+                display: none;
+                border: 2px solid transparent;
             }
+
         }
 
         @media (max-width: 400px) {
@@ -1215,6 +1242,10 @@
         }
 
         function endGame(won) {
+            if (window.Telegram?.WebApp) {
+    Telegram.WebApp.disableClosingConfirmation();
+}
+
             gameOver = !won;
             gameWon = won;
             stopTimer();
@@ -1245,9 +1276,9 @@
                 
                 saveGameData();
                 
-                // Auto advance to next level after 2 seconds
+                
                 setTimeout(() => {
-                    startLevel(currentLevel + 1);
+                    showWinOverlay();
                 }, 2000);
             } else {
                 statusElement.classList.add('lose');
