@@ -16,13 +16,20 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0a0e27 0%, #0f0f1a 50%, #1a0f27 100%);
             color: #ffffff;
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
+        body.lock-scroll {
+    overflow: hidden;
+    height: 100dvh;
+    touch-action: none;
+}
+
 
         .container {
             width: 100%;
@@ -38,7 +45,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            min-height: 100dvh;
             height: 100%;
             gap: 24px;
             padding: 20px 0;
@@ -519,13 +526,14 @@
         }
 
         .game-status.lose {
-            color: #ff3333;
-            border-color: #ff3333;
-            background: rgba(255, 51, 51, 0.15);
-            box-shadow: 0 8px 32px rgba(255, 51, 51, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: loseShake 0.6s ease-out;
-        }
+    position: fixed !important;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 32px);
+    will-change: transform;
+}
+
 
         @keyframes loseShake {
             0%, 100% { transform: translate3d(0, 0, 0); }
@@ -709,6 +717,9 @@
             .menu-title {
                 font-size: 28px;
             }
+            .game-status.lose {
+        animation: none !important;
+    }
 
             .game-board-container {
     flex: 1;
@@ -976,21 +987,23 @@
         }
 
         function startLevel(level) {
-            currentLevel = level;
-            const params = getLevelParams(level);
-            gridSize = params.size;
-            mineCount = params.mines;
-            
-            // Close win overlay if open
-            closeWinOverlay();
-            
-            document.getElementById('levelView').classList.add('hidden-view');
-            document.getElementById('gameView').classList.remove('hidden-view');
-            document.getElementById('currentLevel').textContent = level;
-            
-            initializeBoard();
-            startTimer();
-        }
+    document.body.classList.add('lock-scroll');
+
+    currentLevel = level;
+    const params = getLevelParams(level);
+    gridSize = params.size;
+    mineCount = params.mines;
+
+    closeWinOverlay();
+
+    document.getElementById('levelView').classList.add('hidden-view');
+    document.getElementById('gameView').classList.remove('hidden-view');
+    document.getElementById('currentLevel').textContent = level;
+
+    initializeBoard();
+    startTimer();
+}
+
 
         function startTimer() {
             timer = 0;
@@ -1319,17 +1332,22 @@
             startTimer();
         }
 
-        function backToLevelSelection() {
-            stopTimer();
-            document.getElementById('gameView').classList.add('hidden-view');
-            document.getElementById('levelView').classList.remove('hidden-view');
-            renderLevelGrid();
-        }
+       function backToLevelSelection() {
+    stopTimer();
+    document.body.classList.remove('lock-scroll');
 
-        function backToMainMenu() {
-            document.getElementById('levelView').classList.add('hidden-view');
-            document.getElementById('menuView').classList.remove('hidden-view');
-        }
+    document.getElementById('gameView').classList.add('hidden-view');
+    document.getElementById('levelView').classList.remove('hidden-view');
+    renderLevelGrid();
+}
+
+function backToMainMenu() {
+    document.body.classList.remove('lock-scroll');
+
+    document.getElementById('levelView').classList.add('hidden-view');
+    document.getElementById('menuView').classList.remove('hidden-view');
+}
+
 
         window.addEventListener('load', () => {
             const params = new URLSearchParams(window.location.search);
