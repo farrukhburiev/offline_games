@@ -24,8 +24,8 @@ if not BOT_TOKEN:
     raise ValueError("❌ BOT_TOKEN not found! Set it in Railway.")
 
 # Your game URLs (you can keep these or also make them env variables)
-GAME_URL = "https://farrukhburiev.github.io/offline_games/"
-MINESWEEPER_URL = "https://farrukhburiev.github.io/offline_games/?game=minesweeper"
+GAME_URL = "https://farrukhburiev.github.io/mine_sweeper_game/"
+MINESWEEPER_URL = "https://farrukhburiev.github.io/mine_sweeper_game/?game=minesweeper"
 
 # Initialize bot
 bot = Bot(token=BOT_TOKEN)
@@ -33,7 +33,7 @@ dp = Dispatcher()
 
 # Replace with your GitHub Pages link (or any hosting URL for the Mini App)
 # This URL should point to where you've deployed the index.html file
-BASE_URL = "https://farrukhburiev.github.io/offline_games/"
+BASE_URL = "https://farrukhburiev.github.io/mine_sweeper_game/"
 
 # ============================================================================
 # Initialize Bot and Dispatcher
